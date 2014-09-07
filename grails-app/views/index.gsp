@@ -17,6 +17,9 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5uJiPW5kWH8pfsENS3WYZrcOm0wmsjZI"></script>
+    <asset:javascript src="application.js" />
 </head>
 
 <body>
@@ -48,9 +51,10 @@
         <p class="lead">Look below to find events from last.fm in your local area!</p>
     </div>
 
+    <div id="map-canvas"></div>
+
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<asset:javascript src="application.js" />
+
 </body>
 </html>
