@@ -10,7 +10,6 @@
 
     <title>Google Maps/Last.fm Mashup</title>
 
-    <!-- Bootstrap core CSS -->
     <asset:stylesheet href="application.css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -38,7 +37,7 @@
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="#">About</a></li>
             </ul>
-        </div><!--/.nav-collapse -->
+        </div>
     </div>
 </div>
 
@@ -49,11 +48,8 @@
         <p class="lead">Look below to find events from last.fm in your local area!</p>
     </div>
 
-</div><!-- /.container -->
+</div>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <asset:javascript src="application.js" />
 </body>
