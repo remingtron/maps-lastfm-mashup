@@ -15,9 +15,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      '"grails-app/assets/javascripts/*.js"',
-      '"test\unit\javascript\spec\*Spec.js"',
-      '"test/unit/javascript/spec/*Spec.js"'
+      'grails-app/assets/javascripts/*.js',
+      'test/unit/javascript/spec/*Spec.js'
     ],
 
 
