@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Sun Sep 07 2014 19:28:19 GMT-0400 (Eastern Daylight Time)
+// Generated on Sun Sep 07 2014 21:21:54 GMT-0400 (Eastern Daylight Time)
 
 module.exports = function(config) {
   config.set({
@@ -22,7 +22,6 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
-      'grails-app/assets/javascripts/application.js'
     ],
 
 
@@ -35,12 +34,8 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['remote'],
+    reporters: ['progress'],
 
-    remoteReporter: {
-        host: 'localhost',
-        port: '9889'
-    },
 
     // web server port
     port: 9876,
@@ -56,7 +51,7 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
 
     // start these browsers
@@ -66,6 +61,6 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true
+    singleRun: false
   });
 };

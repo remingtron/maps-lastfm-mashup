@@ -70,6 +70,8 @@ grails.project.dependency.resolution = {
         runtime ":jquery:1.11.1"
         runtime ':twitter-bootstrap:3.2.0.2'
 
+        test ":karma-test-runner:0.2.1"
+
         // Uncomment these to enable additional asset-pipeline capabilities
         //compile ":sass-asset-pipeline:1.9.0"
         //compile ":less-asset-pipeline:1.10.0"
