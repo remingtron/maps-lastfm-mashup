@@ -46,7 +46,7 @@
 
 <div class="container">
 
-    <div class="starter-template">
+    <div id="title-section">
         <h1>Welcome to the Google Maps/Last.fm Mash-up</h1>
         <p class="lead">Look below to find events from last.fm in your local area!</p>
     </div>

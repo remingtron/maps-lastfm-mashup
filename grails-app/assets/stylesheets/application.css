@@ -14,10 +14,11 @@
 body {
     padding-top: 50px;
 }
-.starter-template {
-    padding: 40px 15px;
+#title-section {
+    padding: 20px 15px;
     text-align: center;
 }
 #map-canvas {
     height: 600px;
+    margin-bottom: 20px;
 }
