@@ -10,18 +10,20 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine-jquery', 'jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
       'grails-app/assets/javascripts/*.js',
-      'test/unit/javascript/spec/*Spec.js'
+      'test/unit/javascript/fixtures/*.html',
+      'test/unit/javascript/spec/*.js'
     ],
 
 
     // list of files to exclude
     exclude: [
+      'grails-app/assets/javascripts/maps-wrapper.js',
       'grails-app/assets/javascripts/application.js'
     ],
 

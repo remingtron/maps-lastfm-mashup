@@ -7,25 +7,10 @@
 //
 //= require jquery
 //= require_tree .
+//= require maps-wrapper
+//= require map-generator
 //= require_self
 //= require bootstrap
 
-if (typeof jQuery !== 'undefined') {
-	(function($) {
-		$('#spinner').ajaxStart(function() {
-			$(this).fadeIn();
-		}).ajaxStop(function() {
-			$(this).fadeOut();
-		});
-	})(jQuery);
-}
-
-function initializeGoogleMaps() {
-    var mapOptions = {
-      center: new google.maps.LatLng(-34.397, 150.644),
-      zoom: 8
-    };
-    var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-};
-
-google.maps.event.addDomListener(window, 'load', initializeGoogleMaps);
+MapGenerator.init(MapsWrapper, $);
+MapsWrapper.addDomListener(window, 'load', MapGenerator.initializeMap);
