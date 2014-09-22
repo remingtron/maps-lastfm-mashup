@@ -1,6 +1,6 @@
 var MapGenerator = (function() {
 
-    var mapsWrapper, $;
+    var map, mapsWrapper, $;
 
     var init = function(mapsWrapperIn, jquery) {
         $ = jquery;
@@ -8,11 +8,24 @@ var MapGenerator = (function() {
     };
 
     var initializeMap = function() {
+        var defaultCenter = mapsWrapper.createLatLng(-34.397, 150.644);
         var mapOptions = {
-          center: mapsWrapper.createLatLng(-34.397, 150.644),
+          center: defaultCenter,
           zoom: 8
         };
-        var map = mapsWrapper.createMap($("#map-canvas")[0], mapOptions);
+        map = mapsWrapper.createMap($("#map-canvas")[0], mapOptions);
+        centerMap();
+    };
+
+    var centerMap = function() {
+        if (Html5Support.supportsGeolocation()) {
+            Html5Support.getCurrentPosition(function(position) {
+                initialLocation = mapsWrapper.createLatLng(position.coords.latitude, position.coords.longitude);
+                map.setCenter(initialLocation);
+            }, function(error) {
+
+            });
+        }
     };
 
     return {
@@ -20,3 +33,13 @@ var MapGenerator = (function() {
         initializeMap: initializeMap
     };
 })();
+
+var Html5Support = Html5Support || {};
+
+Html5Support.supportsGeolocation = function() {
+    return 'geolocation' in navigator;
+};
+
+Html5Support.getCurrentPosition = function(success, error) {
+    navigator.geolocation.getCurrentPosition(success, error);
+};
