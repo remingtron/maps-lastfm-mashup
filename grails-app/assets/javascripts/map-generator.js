@@ -23,9 +23,15 @@ var MapGenerator = (function() {
                 initialLocation = mapsWrapper.createLatLng(position.coords.latitude, position.coords.longitude);
                 map.setCenter(initialLocation);
             }, function(error) {
-
+                setUserMessage("We couldn't get your current location, so you get to see Australia!");
             });
+        } else {
+            setUserMessage('Your browser does not support geolocation, so you get to see Australia!');
         }
+    };
+
+    var setUserMessage = function(value) {
+        $('#user-message').text(value);
     };
 
     return {

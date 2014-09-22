@@ -29,6 +29,27 @@ describe("MapGenerator", function() {
         expectMapToBeCreated();
     });
 
+    it("shows the user a message if geolocation is not supported", function() {
+
+        spyOn(Html5Support, "supportsGeolocation").and.returnValue(false);
+
+        MapGenerator.initializeMap();
+
+        expect($j('#user-message').text()).toBe('Your browser does not support geolocation, so you get to see Australia!');
+    });
+
+    it("shows the user a message if geolocation is blocked or fails", function() {
+
+        spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
+        spyOn(Html5Support, "getCurrentPosition").and.callFake(function() {
+            arguments[1]();
+        });
+
+        MapGenerator.initializeMap();
+
+        expect($j('#user-message').text()).toBe("We couldn't get your current location, so you get to see Australia!");
+    });
+
     it("creates a map centered on the user's current location if geolocation success", function() {
 
         spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
@@ -46,6 +67,5 @@ describe("MapGenerator", function() {
     var expectMapToBeCreated = function() {
         expect(MapsWrapper.createMap).toHaveBeenCalledWith($j('#map-canvas')[0], {center: {latitude: -34.397, longitude: 150.644}, zoom: 8});
     };
-
 
 });

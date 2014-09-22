@@ -22,3 +22,6 @@ body {
     height: 600px;
     margin-bottom: 20px;
 }
+#user-message {
+    color: blue;
+}
