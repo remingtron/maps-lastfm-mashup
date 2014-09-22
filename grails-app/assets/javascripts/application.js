@@ -8,6 +8,7 @@
 //= require jquery
 //= require_tree .
 //= require maps-wrapper
+//= require html5-support
 //= require map-generator
 //= require_self
 //= require bootstrap

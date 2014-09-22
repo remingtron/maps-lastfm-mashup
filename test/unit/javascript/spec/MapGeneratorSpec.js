@@ -15,6 +15,12 @@ describe("MapGenerator", function() {
             createMap: function() {
             }
         };
+
+        var Html5Support = {
+            supportsGeolocation: function() {},
+            getCurrentPosition: function() {}
+        };
+
         MapGenerator.init(MapsWrapper, $j);
         spyOn(MapsWrapper, "createMap").and.returnValue(sampleMap);
         spyOn(sampleMap, "setCenter");
