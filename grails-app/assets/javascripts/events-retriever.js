@@ -10,8 +10,8 @@ var EventsRetriever = (function() {
     };
 
     return {
-        init: init;
-        retrieveEvents: retrieveEvents;
+        init: init,
+        retrieveEvents: retrieveEvents
     };
 
 })();
