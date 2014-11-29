@@ -65,8 +65,7 @@ describe("MapGenerator", function() {
     });
 
     it("creates a map centered in Australia if browser does not support geolocation", function() {
-
-        spyOn(Html5Support, "supportsGeolocation").and.returnValue(false);
+        setupGeolocationNotSupported();
 
         MapGenerator.initializeMap();
 
@@ -74,8 +73,7 @@ describe("MapGenerator", function() {
     });
 
     it("shows the user a message if geolocation is not supported", function() {
-
-        spyOn(Html5Support, "supportsGeolocation").and.returnValue(false);
+        setupGeolocationNotSupported();
 
         MapGenerator.initializeMap();
 
@@ -83,11 +81,7 @@ describe("MapGenerator", function() {
     });
 
     it("shows the user a message if geolocation is blocked or fails", function() {
-
-        spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
-        spyOn(Html5Support, "getCurrentPosition").and.callFake(function() {
-            arguments[1]();
-        });
+        setupGeolocationBlocked();
 
         MapGenerator.initializeMap();
 
@@ -95,12 +89,7 @@ describe("MapGenerator", function() {
     });
 
     it("creates a map centered on the user's current location if geolocation success", function() {
-
-        spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
-        spyOn(Html5Support, "getCurrentPosition").and.callFake(function() {
-            var position = { coords: { latitude: 32, longitude: -12 } };
-            arguments[0](position);
-        });
+        setupGeolocationSuccess();
 
         MapGenerator.initializeMap();
 
@@ -112,7 +101,7 @@ describe("MapGenerator", function() {
     });
 
     it("draws a point for each local event when geolocation not supported", function() {
-        spyOn(Html5Support, "supportsGeolocation").and.returnValue(false);
+        setupGeolocationNotSupported();
 
         MapGenerator.initializeMap();
 
@@ -122,10 +111,7 @@ describe("MapGenerator", function() {
     });
 
     it("draws a point for each local event when geolocation blocked or fails", function() {
-        spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
-        spyOn(Html5Support, "getCurrentPosition").and.callFake(function() {
-            arguments[1]();
-        });
+        setupGeolocationBlocked();
 
         MapGenerator.initializeMap();
 
@@ -135,11 +121,7 @@ describe("MapGenerator", function() {
     });
 
     it("draws a point for each local event when geolocation succeeds", function() {
-        spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
-        spyOn(Html5Support, "getCurrentPosition").and.callFake(function() {
-            var position = { coords: { latitude: 32, longitude: -12 } };
-            arguments[0](position);
-        });
+        setupGeolocationSuccess();
 
         MapGenerator.initializeMap();
 
@@ -147,6 +129,25 @@ describe("MapGenerator", function() {
         expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1');
         expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2');
     });
+
+    var setupGeolocationNotSupported = function() {
+        spyOn(Html5Support, "supportsGeolocation").and.returnValue(false);
+    };
+
+    var setupGeolocationBlocked = function() {
+        spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
+        spyOn(Html5Support, "getCurrentPosition").and.callFake(function() {
+            arguments[1]();
+        });
+    };
+
+    var setupGeolocationSuccess = function() {
+        spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
+        spyOn(Html5Support, "getCurrentPosition").and.callFake(function() {
+            var position = { coords: { latitude: 32, longitude: -12 } };
+            arguments[0](position);
+        });
+    };
 
     var expectMapToBeCreated = function(latitude, longitude) {
         expect(MapsWrapper.createMap).toHaveBeenCalledWith($j('#map-canvas')[0], {center: jasmine.any(Object), zoom: 8});
