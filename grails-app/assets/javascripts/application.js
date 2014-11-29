@@ -7,11 +7,12 @@
 //
 //= require jquery
 //= require_tree .
+//= require lastfm-wrapper
 //= require maps-wrapper
 //= require html5-support
 //= require map-generator
 //= require_self
 //= require bootstrap
 
-MapGenerator.init(MapsWrapper, $);
-MapsWrapper.addDomListener(window, 'load', MapGenerator.initializeMap);
+MapGenerator.init(MapsWrapper, $, LastFmWrapper);
+google.maps.event.addDomListener(window, 'load', MapGenerator.initializeMap);

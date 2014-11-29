@@ -1,10 +1,11 @@
 var MapGenerator = (function() {
 
-    var map, mapsWrapper, $;
+    var map, mapsWrapper, $, lastFmWrapper;
 
-    var init = function(mapsWrapperIn, jquery) {
+    var init = function(mapsWrapperIn, jquery, lastFmWrapperIn) {
         $ = jquery;
         mapsWrapper = mapsWrapperIn;
+        lastFmWrapper = lastFmWrapperIn;
     };
 
     var initializeMap = function() {
@@ -15,6 +16,7 @@ var MapGenerator = (function() {
         };
         map = mapsWrapper.createMap($("#map-canvas")[0], mapOptions);
         centerMap();
+        drawEventsOnMap();
     };
 
     var centerMap = function() {
@@ -32,6 +34,15 @@ var MapGenerator = (function() {
 
     var setUserMessage = function(value) {
         $('#user-message').text(value);
+    };
+
+    var drawEventsOnMap = function() {
+        var mapCenter = map.getCenter();
+        var eventsJson = lastFmWrapper.retrieveEvents($, mapCenter.lat(), mapCenter.lng());
+        $.each(eventsJson.events.event, function(index, event) {
+            var location =  event.venue.location['geo:point'];
+            mapsWrapper.addMarker(map, location['geo:lat'], location['geo:long'], event.title);
+        });
     };
 
     return {

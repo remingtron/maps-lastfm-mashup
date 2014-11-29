@@ -10,4 +10,8 @@ MapsWrapper.createLatLng = function(latitude, longitude) {
 
 MapsWrapper.createMap = function(targetElement, options) {
     return new google.maps.Map(targetElement, options);
-}
+};
+
+MapsWrapper.addMarker = function(map, latitude, longitude, title) {
+    return new google.maps.Marker({position: this.createLatLng(latitude, longitude), map: map, title: title});
+};
