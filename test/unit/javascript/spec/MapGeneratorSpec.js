@@ -2,6 +2,32 @@ describe("MapGenerator", function() {
 
     var DEFAULT_LATITUDE = -34.397, DEFAULT_LONGITUDE = 150.644;
 
+    var SAMPLE_EVENT_DATA = { "events": {
+                                "event": [{
+                                        "title": "Event 1",
+                                        "venue": {
+                                            "location": {
+                                                "geo:point": {
+                                                    "geo:lat": 1,
+                                                    "geo:long": -2
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "title": "Event 2",
+                                        "venue": {
+                                            "location": {
+                                                "geo:point": {
+                                                    "geo:lat": 3,
+                                                    "geo:long": -4
+                                                }
+                                            }
+                                        }
+                                    }]
+                                }
+                            };
+
     var MapsWrapper = {
         createLatLng: function(latitude, longitude) {
             return {lat: function() { return latitude; }, lng: function() { return longitude; }};
@@ -25,15 +51,17 @@ describe("MapGenerator", function() {
         };
 
         sampleMap = function() {
-            var center = { lat: function() { return DEFAULT_LATITUDE }, lng: function() { return DEFAULT_LONGITUDE } };
-            var getCenter = function() { return center };
-            var setCenter = function(newCenter) { center = newCenter };
+            var center = { lat: function() { return DEFAULT_LATITUDE; }, lng: function() { return DEFAULT_LONGITUDE; } };
+            var getCenter = function() { return center; };
+            var setCenter = function(newCenter) { console.log(newCenter); center = newCenter; };
             return {getCenter: getCenter, setCenter: setCenter};
         }();
 
         MapGenerator.init(MapsWrapper, $j, LastFmWrapper);
         spyOn(MapsWrapper, "createMap").and.returnValue(sampleMap);
         spyOn(sampleMap, "setCenter").and.callThrough();
+        spyOn(LastFmWrapper, "retrieveEvents").and.returnValue(SAMPLE_EVENT_DATA);
+        spyOn(MapsWrapper, "addMarker");
     });
 
     it("creates a map centered in Australia if browser does not support geolocation", function() {
@@ -83,39 +111,39 @@ describe("MapGenerator", function() {
         expect(newCenter.lng()).toBe(-12);
     });
 
-    it("draws a point for each local event", function() {
-        var sampleEventData = { "events": {
-                                    "event": [{
-                                            "title": "Event 1",
-                                            "venue": {
-                                                "location": {
-                                                    "geo:point": {
-                                                        "geo:lat": 1,
-                                                        "geo:long": -2
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "title": "Event 2",
-                                            "venue": {
-                                                "location": {
-                                                    "geo:point": {
-                                                        "geo:lat": 3,
-                                                        "geo:long": -4
-                                                    }
-                                                }
-                                            }
-                                        }]
-                                    }
-                                };
-
-        spyOn(LastFmWrapper, "retrieveEvents").and.returnValue(sampleEventData);
-        spyOn(MapsWrapper, "addMarker");
+    it("draws a point for each local event when geolocation not supported", function() {
+        spyOn(Html5Support, "supportsGeolocation").and.returnValue(false);
 
         MapGenerator.initializeMap();
 
         expect(LastFmWrapper.retrieveEvents).toHaveBeenCalledWith($j, DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1');
+        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2');
+    });
+
+    it("draws a point for each local event when geolocation blocked or fails", function() {
+        spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
+        spyOn(Html5Support, "getCurrentPosition").and.callFake(function() {
+            arguments[1]();
+        });
+
+        MapGenerator.initializeMap();
+
+        expect(LastFmWrapper.retrieveEvents).toHaveBeenCalledWith($j, DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1');
+        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2');
+    });
+
+    it("draws a point for each local event when geolocation succeeds", function() {
+        spyOn(Html5Support, "supportsGeolocation").and.returnValue(true);
+        spyOn(Html5Support, "getCurrentPosition").and.callFake(function() {
+            var position = { coords: { latitude: 32, longitude: -12 } };
+            arguments[0](position);
+        });
+
+        MapGenerator.initializeMap();
+
+        expect(LastFmWrapper.retrieveEvents).toHaveBeenCalledWith($j, 32, -12);
         expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1');
         expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2');
     });

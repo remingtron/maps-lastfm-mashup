@@ -13,7 +13,7 @@ describe("LastFmWrapper", function() {
 
         expect(jQueryMock.ajax).toHaveBeenCalledWith(jasmine.any(Object));
 
-        var eventsUrl = 'http://ws.audioscrobbler.com/2.0/?method=geo.getevents&api_key=3c5264cf38ed6e7d133a5a2862ca8352&format=json&lat=12&long=24';
+        var eventsUrl = 'http://ws.audioscrobbler.com/2.0/?method=geo.getevents&api_key=3c5264cf38ed6e7d133a5a2862ca8352&format=json&limit=50&lat=12&long=24';
 
         var ajaxOptions = jQueryMock.ajax.calls.argsFor(0)[0];
         expect(ajaxOptions.dataType).toBe('json');

@@ -2,6 +2,8 @@ var MapGenerator = (function() {
 
     var map, mapsWrapper, $, lastFmWrapper;
 
+    var DEFAULT_LATITUDE = -34.397, DEFAULT_LONGITUDE = 150.644;
+
     var init = function(mapsWrapperIn, jquery, lastFmWrapperIn) {
         $ = jquery;
         mapsWrapper = mapsWrapperIn;
@@ -9,26 +11,28 @@ var MapGenerator = (function() {
     };
 
     var initializeMap = function() {
-        var defaultCenter = mapsWrapper.createLatLng(-34.397, 150.644);
+        var defaultCenterInAustralia = mapsWrapper.createLatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
         var mapOptions = {
-          center: defaultCenter,
+          center: defaultCenterInAustralia,
           zoom: 8
         };
         map = mapsWrapper.createMap($("#map-canvas")[0], mapOptions);
         centerMap();
-        drawEventsOnMap();
     };
 
     var centerMap = function() {
         if (Html5Support.supportsGeolocation()) {
             Html5Support.getCurrentPosition(function(position) {
-                initialLocation = mapsWrapper.createLatLng(position.coords.latitude, position.coords.longitude);
+                var initialLocation = mapsWrapper.createLatLng(position.coords.latitude, position.coords.longitude);
                 map.setCenter(initialLocation);
+                drawEventsOnMap();
             }, function(error) {
                 setUserMessage("We couldn't get your current location, so you get to see Australia!");
+                drawEventsOnMap();
             });
         } else {
             setUserMessage('Your browser does not support geolocation, so you get to see Australia!');
+            drawEventsOnMap();
         }
     };
 
