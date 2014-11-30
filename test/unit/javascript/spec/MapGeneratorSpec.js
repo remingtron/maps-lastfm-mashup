@@ -156,6 +156,12 @@ describe("MapGenerator", function() {
         expect(sampleMap.fitBounds.calls.any()).toBe(false);
     });
 
+    it("hides the map after done loading", function() {
+        MapGenerator.initializeMap();
+
+        expect($j('#map-loading').hasClass('hide')).toBe(true);
+    });
+
     var setupGeolocationNotSupported = function() {
         spyOn(Html5Support, "supportsGeolocation").and.returnValue(false);
     };

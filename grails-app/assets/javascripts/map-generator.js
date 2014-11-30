@@ -25,19 +25,24 @@ var MapGenerator = (function() {
             Html5Support.getCurrentPosition(function(position) {
                 var initialLocation = mapsWrapper.createLatLng(position.coords.latitude, position.coords.longitude);
                 map.setCenter(initialLocation);
-                drawEventsOnMap();
+                finishMap();
             }, function(error) {
                 setUserMessage("We couldn't get your current location, so you get to see Australia!");
-                drawEventsOnMap();
+                finishMap();
             });
         } else {
             setUserMessage('Your browser does not support geolocation, so you get to see Australia!');
-            drawEventsOnMap();
+            finishMap();
         }
     };
 
     var setUserMessage = function(value) {
         $('#user-message').text(value);
+    };
+
+    var finishMap = function() {
+        drawEventsOnMap();
+        $('#map-loading').addClass('hide');
     };
 
     var drawEventsOnMap = function() {

@@ -52,7 +52,10 @@
         <div id="user-message"></div>
     </div>
 
-    <div id="map-canvas"></div>
+    <div id="map-divs-container">
+        <div id="map-loading"></div>
+        <div id="map-canvas"></div>
+    </div>
 
 </div>
 
