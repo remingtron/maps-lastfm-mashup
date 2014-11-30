@@ -33,10 +33,15 @@ describe("MapGenerator", function() {
             return {lat: function() { return latitude; }, lng: function() { return longitude; }};
         },
         createMap: function() {},
-        addMarker: function() {}
+        addMarker: function(jquery, latitude, longitude, title) { return {getPosition: function() { return MapsWrapper.createLatLng(latitude, longitude); }} },
+        createBounds: function() {}
     };
 
     var sampleMap;
+
+    var bounds = {
+        extend: function() {}
+    };
 
     var LastFmWrapper = {
         retrieveEvents: function() { return {'events': {'event': []}}; }
@@ -51,17 +56,20 @@ describe("MapGenerator", function() {
         };
 
         sampleMap = function() {
-            var center = { lat: function() { return DEFAULT_LATITUDE; }, lng: function() { return DEFAULT_LONGITUDE; } };
+            var center = MapsWrapper.createLatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
             var getCenter = function() { return center; };
             var setCenter = function(newCenter) { console.log(newCenter); center = newCenter; };
-            return {getCenter: getCenter, setCenter: setCenter};
+            return {getCenter: getCenter, setCenter: setCenter, fitBounds: function() {}};
         }();
 
         MapGenerator.init(MapsWrapper, $j, LastFmWrapper);
-        spyOn(MapsWrapper, "createMap").and.returnValue(sampleMap);
         spyOn(sampleMap, "setCenter").and.callThrough();
+        spyOn(sampleMap, "fitBounds");
         spyOn(LastFmWrapper, "retrieveEvents").and.returnValue(SAMPLE_EVENT_DATA);
-        spyOn(MapsWrapper, "addMarker");
+        spyOn(MapsWrapper, "createMap").and.returnValue(sampleMap);
+        spyOn(MapsWrapper, "addMarker").and.callThrough();
+        spyOn(MapsWrapper, "createBounds").and.returnValue(bounds);
+        spyOn(bounds, "extend");
     });
 
     it("creates a map centered in Australia if browser does not support geolocation", function() {
@@ -106,8 +114,7 @@ describe("MapGenerator", function() {
         MapGenerator.initializeMap();
 
         expect(LastFmWrapper.retrieveEvents).toHaveBeenCalledWith($j, DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1');
-        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2');
+        expectCorrectPointsToBeDrawn();
     });
 
     it("draws a point for each local event when geolocation blocked or fails", function() {
@@ -116,8 +123,7 @@ describe("MapGenerator", function() {
         MapGenerator.initializeMap();
 
         expect(LastFmWrapper.retrieveEvents).toHaveBeenCalledWith($j, DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1');
-        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2');
+        expectCorrectPointsToBeDrawn();
     });
 
     it("draws a point for each local event when geolocation succeeds", function() {
@@ -126,8 +132,28 @@ describe("MapGenerator", function() {
         MapGenerator.initializeMap();
 
         expect(LastFmWrapper.retrieveEvents).toHaveBeenCalledWith($j, 32, -12);
-        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1');
-        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2');
+        expectCorrectPointsToBeDrawn();
+    });
+
+    it("fits the map to the found events", function() {
+        MapGenerator.initializeMap();
+
+        expect(sampleMap.fitBounds).toHaveBeenCalledWith(bounds);
+        expect(bounds.extend.calls.count()).toEqual(2);
+        var firstLatLng = bounds.extend.calls.argsFor(0)[0];
+        expect(firstLatLng.lat()).toBe(1);
+        expect(firstLatLng.lng()).toBe(-2);
+        var secondLatLng = bounds.extend.calls.argsFor(1)[0];
+        expect(secondLatLng.lat()).toBe(3);
+        expect(secondLatLng.lng()).toBe(-4);
+    });
+
+    it("does not adjust map zoom if no events are found", function() {
+        LastFmWrapper.retrieveEvents.and.returnValue({"events": {"event": []}});
+
+        MapGenerator.initializeMap();
+
+        expect(sampleMap.fitBounds.calls.any()).toBe(false);
     });
 
     var setupGeolocationNotSupported = function() {
@@ -155,6 +181,11 @@ describe("MapGenerator", function() {
         var center = MapsWrapper.createMap.calls.argsFor(0)[1].center;
         expect(center.lat()).toBe(DEFAULT_LATITUDE);
         expect(center.lng()).toBe(DEFAULT_LONGITUDE);
+    };
+
+    var expectCorrectPointsToBeDrawn = function() {
+        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1');
+        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2');
     };
 
 });

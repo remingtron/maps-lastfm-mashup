@@ -43,10 +43,15 @@ var MapGenerator = (function() {
     var drawEventsOnMap = function() {
         var mapCenter = map.getCenter();
         var eventsJson = lastFmWrapper.retrieveEvents($, mapCenter.lat(), mapCenter.lng());
-        $.each(eventsJson.events.event, function(index, event) {
-            var location =  event.venue.location['geo:point'];
-            mapsWrapper.addMarker(map, location['geo:lat'], location['geo:long'], event.title);
-        });
+        if (eventsJson.events.event.length > 0) {
+            var eventsBounds = mapsWrapper.createBounds();
+            $.each(eventsJson.events.event, function(index, event) {
+                var location =  event.venue.location['geo:point'];
+                var marker = mapsWrapper.addMarker(map, location['geo:lat'], location['geo:long'], event.title);
+                eventsBounds.extend(marker.getPosition());
+            });
+            map.fitBounds(eventsBounds);
+        }
     };
 
     return {

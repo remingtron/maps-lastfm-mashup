@@ -15,3 +15,7 @@ MapsWrapper.createMap = function(targetElement, options) {
 MapsWrapper.addMarker = function(map, latitude, longitude, title) {
     return new google.maps.Marker({position: this.createLatLng(latitude, longitude), map: map, title: title});
 };
+
+MapsWrapper.createBounds = function() {
+    return new google.maps.LatLngBounds();
+};
