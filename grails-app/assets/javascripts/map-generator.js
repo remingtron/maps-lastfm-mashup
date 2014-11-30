@@ -1,13 +1,14 @@
 var MapGenerator = (function() {
 
-    var map, mapsWrapper, $, lastFmWrapper;
+    var map, mapsWrapper, $, lastFmWrapper, infoWindowContentGenerator;
 
     var DEFAULT_LATITUDE = -34.397, DEFAULT_LONGITUDE = 150.644;
 
-    var init = function(mapsWrapperIn, jquery, lastFmWrapperIn) {
+    var init = function(mapsWrapperIn, jquery, lastFmWrapperIn, infoWindowContentGeneratorIn) {
         $ = jquery;
         mapsWrapper = mapsWrapperIn;
         lastFmWrapper = lastFmWrapperIn;
+        infoWindowContentGenerator = infoWindowContentGeneratorIn;
     };
 
     var initializeMap = function() {
@@ -52,7 +53,7 @@ var MapGenerator = (function() {
             var eventsBounds = mapsWrapper.createBounds();
             $.each(eventsJson.events.event, function(index, event) {
                 var location =  event.venue.location['geo:point'];
-                var marker = mapsWrapper.addMarker(map, location['geo:lat'], location['geo:long'], event.title);
+                var marker = mapsWrapper.addMarker(map, location['geo:lat'], location['geo:long'], event.title, infoWindowContentGenerator.generate(event));
                 eventsBounds.extend(marker.getPosition());
             });
             map.fitBounds(eventsBounds);

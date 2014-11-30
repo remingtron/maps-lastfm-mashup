@@ -14,10 +14,10 @@ var MapsWrapper = function() {
         return new google.maps.Map(targetElement, options);
     };
 
-    var addMarker = function(map, latitude, longitude, title) {
+    var addMarker = function(map, latitude, longitude, title, infoWindowContent) {
         var marker = new google.maps.Marker({position: this.createLatLng(latitude, longitude), map: map, title: title});
         var infoWindow = new google.maps.InfoWindow({
-            content: '<div>'+title+'</div>'
+            content: infoWindowContent
         });
         google.maps.event.addListener(marker, 'click', function() {
             if (lastInfoWindow != undefined) {

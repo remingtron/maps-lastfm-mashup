@@ -9,10 +9,11 @@
 //= require_tree .
 //= require lastfm-wrapper
 //= require maps-wrapper
+//= require info-window-content-generator
 //= require html5-support
 //= require map-generator
 //= require_self
 //= require bootstrap
 
-MapGenerator.init(MapsWrapper, $, LastFmWrapper);
+MapGenerator.init(MapsWrapper, $, LastFmWrapper, InfoWindowContentGenerator);
 google.maps.event.addDomListener(window, 'load', MapGenerator.initializeMap);

@@ -47,6 +47,12 @@ describe("MapGenerator", function() {
         retrieveEvents: function() { return {'events': {'event': []}}; }
     };
 
+    var InfoWindowContentGenerator = {
+        generate: function() {}
+    };
+
+    var infoWindowContent = 'content';
+
     beforeEach(function() {
         loadFixtures("MapGeneratorFixture.html");
 
@@ -62,7 +68,7 @@ describe("MapGenerator", function() {
             return {getCenter: getCenter, setCenter: setCenter, fitBounds: function() {}};
         }();
 
-        MapGenerator.init(MapsWrapper, $j, LastFmWrapper);
+        MapGenerator.init(MapsWrapper, $j, LastFmWrapper, InfoWindowContentGenerator);
         spyOn(sampleMap, "setCenter").and.callThrough();
         spyOn(sampleMap, "fitBounds");
         spyOn(LastFmWrapper, "retrieveEvents").and.returnValue(SAMPLE_EVENT_DATA);
@@ -70,6 +76,7 @@ describe("MapGenerator", function() {
         spyOn(MapsWrapper, "addMarker").and.callThrough();
         spyOn(MapsWrapper, "createBounds").and.returnValue(bounds);
         spyOn(bounds, "extend");
+        spyOn(InfoWindowContentGenerator, "generate").and.returnValue(infoWindowContent);
     });
 
     it("creates a map centered in Australia if browser does not support geolocation", function() {
@@ -190,8 +197,8 @@ describe("MapGenerator", function() {
     };
 
     var expectCorrectPointsToBeDrawn = function() {
-        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1');
-        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2');
+        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 1, -2, 'Event 1', infoWindowContent);
+        expect(MapsWrapper.addMarker).toHaveBeenCalledWith(sampleMap, 3, -4, 'Event 2', infoWindowContent);
     };
 
 });
